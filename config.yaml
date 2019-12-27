@@ -1,0 +1,17 @@
+url: 'http://some-url:8124'
+timeout: 5000                         # default 5000ms
+
+console_log_level: 'info'             # default Info, options (off, error, warn, info, debug, trace)
+logfile_log_level: 'warn'             # default Warn, options (off, error, warn, info, debug, trace)
+logfile_max_count: 10                 # maximum number of log files to keep
+logfile_max_size : 20                 # maximum size per logfile in MiB
+
+debug: true                   # default true
+
+# Low noise log patterns
+console_log_pattern: "{({d(%H:%M:%S)} [{l}]):16.16} {m}{n}"
+logfile_log_pattern: "{({d(%Y-%m-%d %H:%M:%S)} [{l}]):26.26} {m}{n}"
+
+# More detailed log patterns
+#console_log_pattern: "{d(%H:%M:%S.%3f%z)} [{h({l}):<5}] [{T}] [{t}] - {M}:{m}{n}"
+#logfile_log_pattern: "{d(%Y-%m-%dT%H:%M:%S.%3f%z)} [{h({l}):<5}] [{T}]-[{t}] [{f}:{L}] - {M}:{m}{n}"
