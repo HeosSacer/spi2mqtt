@@ -46,15 +46,16 @@ fn init() -> Cfg{
     let matches = &arg.get_matches();
     let config = matches.value_of("config").unwrap();
     let cfg_loaded = config::load_cfg(config);
-    logger::init_logger(&cfg_loaded);
+    //logger::init_logger(&cfg_loaded);
     return cfg_loaded;
 }
 
 fn main() {
     let config = init();
+    logger::init_logger(&config);
     // Main App
     unsafe {
         init_spi();
     }
-    println!("exit")
+    info!("spi2mqtt exit")
 }

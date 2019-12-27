@@ -61,7 +61,7 @@ pub fn init_logger(cfg: &Cfg) -> log4rs::Handle {
     } else {
         let logfile = RollingFileAppender::builder()
             .encoder(Box::new(PatternEncoder::new(&logfile_log_pattern)))
-            .build("log/scavenger.1.log", policy)
+            .build("log/spi2mqtt.1.log", policy)
             .unwrap();
         Config::builder()
             .appender(
