@@ -32,6 +32,9 @@
 
 /******************* FUNCTION DECLARATIONS *********************/
 void* scheduleStack(void *arg);		// thread function for bB stack
+void getBrickStats(void);
+void isBrickBusInit(void);
+void getModules(void);
 //int threadInit(void);
 
 /********************* GLOBAL VARIABLES ************************/
@@ -83,6 +86,32 @@ void* scheduleTask(void *arg)
 		bB_Appl();
 		delay(50);		//Delay 50ms
 	}
+}
+
+void brickBusInit(void) {
+    while(!brickBUS[0].bB_BUS.initialized)
+    {
+        delay(20);
+    }
+}
+
+void getBrickStats(void) {
+    printf("---------------------------------------\n");
+    printf("emBRICK(R), RaspberryBrick Starterkit-1\n");
+    printf("BSP and sample application, V0.06\n");
+    printf("brickBUS stack version: %02d \n",BRICKBUS_STACK_VERSION);
+    printf("(c) 2016 by IMACS GmbH\n");
+    printf("---------------------------------------\n");
+    printf("Setting of the DIP switch: DI=%1d%1d%1d%1d \n", bcm2835_gpio_lev(RPI_V2_GPIO_P1_15), bcm2835_gpio_lev(RPI_V2_GPIO_P1_13), bcm2835_gpio_lev(RPI_V2_GPIO_P1_12), bcm2835_gpio_lev(RPI_V2_GPIO_P1_11));
+}
+
+void getModules(void) {
+    // list found modules with details
+    short modules = bB_getNumModules(1);
+    printf("module(s) found ... %d\n", modules);
+    for (short i=1; i <= modules; i++)
+        printf("   module %02d ...... ID:%1d-%03d, Mod-Vers: %02d, Prot-Vers: %02d\n",
+               i, bB_getModulID(1,i)/1000, bB_getModulID(1,i)%1000, bB_getModulSwVers(1,i), bB_getModulbBVers(1,i));
 }
 
 /****************************************************************
@@ -147,7 +176,7 @@ int threadInit()
 *RETURN:			always 0									*
 *                                                               *
 ****************************************************************/
-int main(int argc, char **argv)
+int _main(int argc, char **argv)
 {
 	short ret, modules, i;
 

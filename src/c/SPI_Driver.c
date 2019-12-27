@@ -20,7 +20,7 @@
 *       Tel.: 07154/8083-0, Fax.: 07154/8083-29					*
 *       E-Mail: info@imacs-gmbh.de								*
 ****************************************************************/
-#include <bcm2835.h>
+#include "../../old_bcm/bcm2835.h"
 #include <stdio.h>
 #include "bBConfigs.h"
 #include "bBDefines.h"

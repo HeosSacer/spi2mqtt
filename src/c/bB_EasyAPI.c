@@ -27,7 +27,7 @@
 
 /************************* INCLUDES ****************************/
 #include <pthread.h>
-#include <bcm2835.h>
+#include "../../old_bcm/bcm2835.h"
 #include "bBConfigs.h"
 #include "bB_EasyAPI.h"
 #include <stdio.h>

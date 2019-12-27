@@ -12,17 +12,24 @@ use std::os::raw::c_int;
 use clap::{App, Arg};
 use crate::config::Cfg;
 
-mod logger;
 mod config;
 
 extern "C" {
     pub fn spiInit() -> c_int;
+    pub fn getBrickStats() -> ();
+    pub fn brickBusInit() -> ();
+    pub fn getModules() -> ();
 }
 
 
 unsafe fn init_spi() -> bool{
     spiInit();
     info!("Connected to SPI Device");
+    getBrickStats();
+    brickBusInit();
+    info!("BrickBus Initialized!");
+    info!("Getting Brick Devices...");
+    getModules();
     return true;
 }
 
@@ -52,7 +59,7 @@ fn init() -> Cfg{
 
 fn main() {
     let config = init();
-    logger::init_logger(&config);
+    env_logger::init();
     // Main App
     unsafe {
         init_spi();
