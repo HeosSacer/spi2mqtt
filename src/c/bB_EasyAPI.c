@@ -70,6 +70,28 @@ void* scheduleStack(void *arg)
 }
 
 /****************************************************************
+*FUNCTION NAME:		scheduleStackSingle()					    *
+*                                                               *
+*DESCRIPTION:	  	Schedueles stack for sequential     		*
+*                                                               *
+*PARAMETER:			None										*
+*                                                               *
+*RETURN:			None					                    *
+*                                                               *
+****************************************************************/
+ void* scheduleStackSingle(void)
+ {
+     bB_Processing();
+
+     if (BB_Timeout > 0)		// count Timeout
+         BB_Timeout -= BB_DELAY;
+     else
+         BB_Timeout = 0 ;
+
+     delay(BB_DELAY);		//Delay between calls of emBRICK-Bus
+ }
+
+/****************************************************************
 *FUNCTION NAME:		printInHex()								*
 *                                                               *
 *DESCRIPTION:		The function prints hex value				*

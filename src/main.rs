@@ -8,31 +8,15 @@ extern crate log;
 #[macro_use]
 extern crate clap;
 
-use std::os::raw::c_int;
 use clap::{App, Arg};
 use crate::config::Cfg;
 
+use ctrlc;
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::Arc;
+
 mod config;
-
-extern "C" {
-    pub fn spiInit() -> c_int;
-    pub fn getBrickStats() -> ();
-    pub fn brickBusInit() -> ();
-    pub fn getModules() -> ();
-}
-
-
-unsafe fn init_spi() -> bool{
-    spiInit();
-    info!("Connected to SPI Device");
-    getBrickStats();
-    brickBusInit();
-    info!("BrickBus Initialized!");
-    info!("Getting Brick Devices...");
-    getModules();
-    return true;
-}
-
+mod spi_communication;
 
 fn init() -> Cfg{
     // Init
@@ -58,11 +42,27 @@ fn init() -> Cfg{
 }
 
 fn main() {
-    let config = init();
+    // Init
     env_logger::init();
-    // Main App
+    let config = init();
+
+    // Init spi
     unsafe {
-        init_spi();
+        spi_communication::init_spi();
     }
-    info!("spi2mqtt exit")
+
+    // Set Handler for Ctrl-C
+    let running = Arc::new(AtomicBool::new(true));
+    let r = running.clone();
+
+    ctrlc::set_handler(move || {
+        r.store(false, Ordering::SeqCst);
+    }).expect("Error setting Ctrl-C handler");
+
+    // Get Messages
+    while running.load(Ordering::SeqCst) {
+            spi_communication::get_message()
+    }
+    unsafe{spi_communication::close_spi()};
+    info!("spi2mqtt exit");
 }

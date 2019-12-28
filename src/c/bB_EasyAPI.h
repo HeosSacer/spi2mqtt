@@ -21,8 +21,15 @@
 #define MOD1_DI2		1,1,4,1	// Node 1, Module 1, Byte 4, Bit 1
 #define MOD1_DI3		1,1,4,2	// Node 1, Module 1, Byte 4, Bit 2
 #define MOD1_DI4		1,1,4,3	// Node 1, Module 1, Byte 4, Bit 3
-#define MOD1_AI1		1,1,0		// Node 1, Module 1, Byte 0
+#define MOD1_AI0		1,1,0		// Node 1, Module 1, Byte 0
+#define MOD1_AI1		1,1,1		// Node 1, Module 1, Byte 1
 #define MOD1_AI2		1,1,2		// Node 1, Module 1, Byte 2
+#define MOD1_AI3		1,1,3		// Node 1, Module 1, Byte 3
+#define MOD1_AI4		1,1,4		// Node 1, Module 1, Byte 4
+#define MOD1_AI5		1,1,5		// Node 1, Module 1, Byte 5
+#define MOD1_AI6		1,1,6		// Node 1, Module 1, Byte 6
+#define MOD1_AI7		1,1,7		// Node 1, Module 1, Byte 7
+#define MOD1_AI8		1,1,8		// Node 1, Module 1, Byte 8
 /*---For exemple------
 // module 2
 #define MOD2_DO1		1,2,0,0		// Node 1, Module 2, Byte 0, Bit 0

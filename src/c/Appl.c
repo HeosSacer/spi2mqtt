@@ -26,15 +26,17 @@
 #include <pthread.h>
 
 /*************************** DEFINES ****************************/
-#define UPDATE_RATE		50			// ms	
+#define UPDATE_RATE		1			// ms
 
 /******************* EXTERNAL VARIABLES ************************/
 
 /******************* FUNCTION DECLARATIONS *********************/
 void* scheduleStack(void *arg);		// thread function for bB stack
+void* scheduleStackSingle(void);
 void getBrickStats(void);
 void isBrickBusInit(void);
 void getModules(void);
+void permCallSPI(void);
 //int threadInit(void);
 
 /********************* GLOBAL VARIABLES ************************/
@@ -62,10 +64,10 @@ void bB_Appl(void)
 	char b;
 			
 	counter++;		
-	bB_putBit(MOD1_REL1, (counter & 0x10) ? 1:0); // Relays switching periodically, set/clear output bit (1,1,0,0) Node 1, Module 1, Byte 0, Bit 0
+	//bB_putBit(MOD1_REL1, (counter & 0x10) ? 1:0); // Relays switching periodically, set/clear output bit (1,1,0,0) Node 1, Module 1, Byte 0, Bit 0
 	
-	b = bB_getBit(MOD1_DI1);	// read input bit (1,1,4,2)--> Node 1, Module 1, Byte 4, Bit 2
-	bB_putBit(MOD1_REL2, b);	// set output bit (1,1,0,1)--> Node 1, Module 1, Byte 0, Bit 1 
+	//b = bB_getBit(MOD1_DI1);	// read input bit (1,1,4,2)--> Node 1, Module 1, Byte 4, Bit 2
+	//bB_putBit(MOD1_REL2, b);	// set output bit (1,1,0,1)--> Node 1, Module 1, Byte 0, Bit 1
 }
 
 /****************************************************************
@@ -89,13 +91,19 @@ void* scheduleTask(void *arg)
 }
 
 void brickBusInit(void) {
-    while(!brickBUS[0].bB_BUS.initialized)
-    {
+    //short ret = threadInit();
+    printf("Thread initiated\n");
+    printf("Connecting to device...\n");
+    // wait until brickBUS is operating
+    while (!brickBUS[0].bB_BUS.initialized)
+        scheduleStackSingle();
         delay(20);
-    }
+
+    printf("successfull\n");
 }
 
 void getBrickStats(void) {
+    scheduleStackSingle();
     printf("---------------------------------------\n");
     printf("emBRICK(R), RaspberryBrick Starterkit-1\n");
     printf("BSP and sample application, V0.06\n");
@@ -112,6 +120,25 @@ void getModules(void) {
     for (short i=1; i <= modules; i++)
         printf("   module %02d ...... ID:%1d-%03d, Mod-Vers: %02d, Prot-Vers: %02d\n",
                i, bB_getModulID(1,i)/1000, bB_getModulID(1,i)%1000, bB_getModulSwVers(1,i), bB_getModulbBVers(1,i));
+}
+
+void permCallSPI(void){
+    scheduleStackSingle();
+    printf("AI0=%04d  AI1=%04d  AI2=%04d  AI3=%04d  AI4=%04d  AI5=%04d  AI6=%04d  AI7=%04d  AI8=%04d  DI=%1d%1d%1d%1d\r", // Values are shown on the screen
+           bB_getWord(MOD1_AI0),
+           bB_getWord(MOD1_AI1),					// these functions just read the buffered data, ...
+           bB_getWord(MOD1_AI2),
+           bB_getWord(MOD1_AI3),
+           bB_getWord(MOD1_AI4),
+           bB_getWord(MOD1_AI5),
+           bB_getWord(MOD1_AI6),
+           bB_getWord(MOD1_AI7),
+           bB_getWord(MOD1_AI8),// .. the data exchange is done in a separate thread asynchronsously
+           bB_getBit(MOD1_DI1),
+           bB_getBit(MOD1_DI2),
+           bB_getBit(MOD1_DI3),
+           bB_getBit(MOD1_DI4)
+    );
 }
 
 /****************************************************************
