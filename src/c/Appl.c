@@ -37,7 +37,7 @@ void getBrickStats(void);
 void isBrickBusInit(void);
 void getModules(void);
 void permCallSPI(void);
-//int threadInit(void);
+int threadInit(void);
 
 /********************* GLOBAL VARIABLES ************************/
 long BB_Timeout = 0 ;	// ms based Timeout, used by brickBUS Lib functions
@@ -90,16 +90,21 @@ void* scheduleTask(void *arg)
 	}
 }
 
-void brickBusInit(void) {
-    //short ret = threadInit();
-    printf("Thread initiated\n");
+short brickBusInit(void) {
+    short ret = bB_Init();
+    if(ret == -1){
+        printf("Connection FAILED!\n");
+        return -1;
+    }
+
+    scheduleStackSingle();
     printf("Connecting to device...\n");
     // wait until brickBUS is operating
-    while (!brickBUS[0].bB_BUS.initialized)
+    while (!brickBUS[0].bB_BUS.initialized) {
         scheduleStackSingle();
         delay(20);
-
-    printf("successfull\n");
+    }
+    return 1;
 }
 
 void getBrickStats(void) {
@@ -175,6 +180,7 @@ int threadInit()
            return -1;
     }
 
+    /*
 	// thread 2 : Application Demo
 	err = pthread_create(&thread2, &attr, &scheduleTask, NULL);
     if (err != 0)
@@ -182,6 +188,7 @@ int threadInit()
            printf("\n The thread cannot be generated:[%s]", strerror(err));
            return -1;
     }
+    */
 
 	param.sched_priority = 0;
 	pthread_setschedparam(this_p, SCHED_RR, &param);

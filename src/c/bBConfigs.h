@@ -20,7 +20,7 @@
  *													*
  ***************************************************/
 #include <stdio.h>
-#include "../../old_bcm/bcm2835.h"
+#include "bcm2835.h"
 #ifndef BBCONFIGS_H
 #define	BBCONFIGS_H 
 #define USE_BRICKBUS 1

@@ -47,9 +47,7 @@ fn main() {
     let config = init();
 
     // Init spi
-    unsafe {
-        spi_communication::init_spi();
-    }
+    spi_communication::init_spi();
 
     // Set Handler for Ctrl-C
     let running = Arc::new(AtomicBool::new(true));
@@ -60,9 +58,13 @@ fn main() {
     }).expect("Error setting Ctrl-C handler");
 
     // Get Messages
+    let mut msg: [u16; 16] = Default::default();
+
     while running.load(Ordering::SeqCst) {
-            spi_communication::get_message()
+        msg = spi_communication::get_message();
+        //spi_communication::debug_out();
     }
-    unsafe{spi_communication::close_spi()};
+    println!("\n");
+    spi_communication::close_spi();
     info!("spi2mqtt exit");
 }

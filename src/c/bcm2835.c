@@ -1868,6 +1868,7 @@ int bcm2835_close(void)
     if (debug) return 1; /* Success */
 
     unmapmem((void**) &bcm2835_peripherals, bcm2835_peripherals_size);
+
     bcm2835_peripherals = MAP_FAILED;
     bcm2835_gpio = MAP_FAILED;
     bcm2835_pwm  = MAP_FAILED;
@@ -1879,6 +1880,7 @@ int bcm2835_close(void)
     bcm2835_st   = MAP_FAILED;
     bcm2835_aux  = MAP_FAILED;
     bcm2835_spi1 = MAP_FAILED;
+
     return 1; /* Success */
 }    
 

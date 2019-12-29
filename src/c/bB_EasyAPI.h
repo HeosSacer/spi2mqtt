@@ -12,7 +12,8 @@
 
 #include <stdio.h>
 #include "bBDefines.h"
-#include "../../old_bcm/bcm2835.h"
+#include "bcm2835.h"
+#include "SPI_Driver.h"
 
 // module 1 - 2Rel4Di2Ai (basic module) 
 #define MOD1_REL1		1,1,0,0		// Node 1, Module 1, Byte 0, Bit 0

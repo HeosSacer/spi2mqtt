@@ -27,9 +27,10 @@
 
 /************************* INCLUDES ****************************/
 #include <pthread.h>
-#include "../../old_bcm/bcm2835.h"
+#include "bcm2835.h"
 #include "bBConfigs.h"
 #include "bB_EasyAPI.h"
+#include "SPI_Driver.h"
 #include <stdio.h>
 
 /*************************** DEFINES ****************************/
@@ -89,6 +90,7 @@ void* scheduleStack(void *arg)
          BB_Timeout = 0 ;
 
      delay(BB_DELAY);		//Delay between calls of emBRICK-Bus
+     delay(20);		//Delay between calls of emBRICK-Bus
  }
 
 /****************************************************************
@@ -130,7 +132,7 @@ int bB_Init(void)
 	
 	setupbBData();
 	ret = spiInit();
-	
+
 	// Set RPI pin P1-11,12,13,15 to be an input(DIP Switch)    
 	bcm2835_gpio_fsel(RPI_V2_GPIO_P1_11, BCM2835_GPIO_FSEL_INPT);
 	bcm2835_gpio_fsel(RPI_V2_GPIO_P1_12, BCM2835_GPIO_FSEL_INPT);
@@ -138,10 +140,10 @@ int bB_Init(void)
 	bcm2835_gpio_fsel(RPI_V2_GPIO_P1_15, BCM2835_GPIO_FSEL_INPT);
 	// Set the pin P1-16,18,22(LED1-3) to be an output    
 	bcm2835_gpio_fsel(RPI_V2_GPIO_P1_16, BCM2835_GPIO_FSEL_OUTP);
-	bcm2835_gpio_fsel(RPI_V2_GPIO_P1_18, BCM2835_GPIO_FSEL_OUTP);	
+	bcm2835_gpio_fsel(RPI_V2_GPIO_P1_18, BCM2835_GPIO_FSEL_OUTP);
 	bcm2835_gpio_fsel(RPI_V2_GPIO_P1_22, BCM2835_GPIO_FSEL_OUTP);
-	
-	return ret;
+
+    return ret;
 }
 /****************************************************************
 *FUNCTION NAME:		bB_getNumModules()							*
@@ -191,7 +193,11 @@ short bB_getModulID(unsigned short node, unsigned short slaveNo)
 ****************************************************************/
 void bB_Close(void)
 {
-	spiClose();
+
+    bcm2835_gpio_clr(RPI_V2_GPIO_P5_06);
+    bcm2835_gpio_clr(RPI_V2_GPIO_P5_04);
+    bcm2835_gpio_clr(RPI_V2_GPIO_P5_05);
+    spiClose();
 }
 /****************************************************************
 *FUNCTION NAME:		bB_getModulSwVers()							*
@@ -277,8 +283,9 @@ void bB_terminate(void)
 	bcm2835_gpio_clr(RPI_V2_GPIO_P1_16);
 	bcm2835_gpio_clr(RPI_V2_GPIO_P1_18);
 	bcm2835_gpio_clr(RPI_V2_GPIO_P1_22);
-	spiClose();	//SPI-Interfase close
-	BB_SLAVE_DESELECT(node);	// brickBUS close	
+    BB_SLAVE_DESELECT(node);	// brickBUS close
+    spiClose();
+    //BB_SLAVE_DESELECT(1);	// brickBUS close
 }
 /****************************************************************
 *FUNCTION NAME:		bB_getWord()								*

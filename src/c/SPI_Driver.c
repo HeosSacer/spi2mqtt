@@ -20,7 +20,8 @@
 *       Tel.: 07154/8083-0, Fax.: 07154/8083-29					*
 *       E-Mail: info@imacs-gmbh.de								*
 ****************************************************************/
-#include "../../old_bcm/bcm2835.h"
+#include "bcm2835.h"
+#include "SPI_Driver.h"
 #include <stdio.h>
 #include "bBConfigs.h"
 #include "bBDefines.h"
@@ -39,18 +40,20 @@
 int spiInit()
 {
 	if (!bcm2835_init())
-		return -1; 
-	
-	bcm2835_gpio_fsel(RPI_GPIO_P1_22, BCM2835_GPIO_FSEL_OUTP);
+        return -1;
+
+    bcm2835_gpio_fsel(RPI_GPIO_P1_22, BCM2835_GPIO_FSEL_OUTP);
 	bcm2835_gpio_clr(RPI_GPIO_P1_22);
 	bcm2835_gpio_fsel(RPI_GPIO_P1_18, BCM2835_GPIO_FSEL_OUTP);
 	bcm2835_gpio_clr(RPI_GPIO_P1_18);
+
 	
 	bcm2835_spi_begin();
 	bcm2835_spi_setBitOrder(BCM2835_SPI_BIT_ORDER_MSBFIRST);    // Arrangement of byte transference MSB First. 
 	bcm2835_spi_setDataMode(BCM2835_SPI_MODE1);                 // CPOL=0 (Clock Idle High level), CPHA=1 (SDO transmit/change edge active to idle)
 	bcm2835_spi_setClockDivider(2500); 							// 250MHz/2500 = 100kHz 
-	   
+
+    BB_SLAVE_SELECT(1)
 	return(0);
 }
 /****************************************************************
@@ -66,7 +69,7 @@ int spiInit()
 void spiClose(void)
 {	
 	bcm2835_spi_end(); 
-	bcm2835_close();
+	//bcm2835_close();
 }
 
 /****************************************************************
